@@ -2,6 +2,7 @@ import burp.api.montoya.BurpExtension;
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.persistence.Persistence;
 import data.bcheck.BCheck;
+import data.bcheck.BCheckFactory;
 import data.bcheck.BCheckFilter;
 import data.bcheck.BCheckItemImporter;
 import logging.Logger;
@@ -36,7 +37,8 @@ public class Extension implements BurpExtension {
                 "BCheck Store",
                 new BCheckFilter(),
                 repository,
-                new BCheckItemImporter(api.scanner().bChecks(), logger)
+                new BCheckItemImporter(api.scanner().bChecks(), logger),
+                new BCheckFactory(logger)
         );
 
         Settings settings = new Settings(settingsController);

@@ -1,7 +1,7 @@
 package repository;
 
+import data.ItemFactory;
 import data.bcheck.BCheck;
-import data.bcheck.BCheckFactory;
 import file.finder.FileFinder;
 import logging.Logger;
 import settings.repository.filesystem.FileSystemRepositorySettingsReader;
@@ -15,21 +15,18 @@ public class FileSystemRepository implements Repository<BCheck> {
 
     private final FileFinder bCheckFileFinder;
     private final FileSystemRepositorySettingsReader settings;
-    private final BCheckFactory bCheckFactory;
     private final Logger logger;
 
     public FileSystemRepository(FileSystemRepositorySettingsReader settings,
                                 FileFinder bCheckFileFinder,
-                                BCheckFactory bCheckFactory,
                                 Logger logger) {
         this.bCheckFileFinder = bCheckFileFinder;
         this.settings = settings;
-        this.bCheckFactory = bCheckFactory;
         this.logger = logger;
     }
 
     @Override
-    public List<BCheck> loadAllItems() {
+    public List<BCheck> loadAllItems(ItemFactory<BCheck> itemFactory) {
         if (settings.repositoryLocation().isEmpty()) {
             logger.logError(EMPTY_LOCATION_MESSAGE);
             throw new IllegalStateException(EMPTY_LOCATION_MESSAGE);
@@ -45,7 +42,7 @@ public class FileSystemRepository implements Repository<BCheck> {
 
         return bCheckFileFinder.find(location.toPath(), BCheck.FILE_EXTENSION)
                 .stream()
-                .map(bCheckFactory::fromFile)
+                .map(itemFactory::fromFile)
                 .toList();
     }
 }

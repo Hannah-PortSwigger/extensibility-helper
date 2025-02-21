@@ -1,5 +1,6 @@
 package repository;
 
+import data.ItemFactory;
 import data.bcheck.BCheck;
 import settings.repository.RepositorySettingsReader;
 
@@ -20,12 +21,12 @@ public class RepositoryFacade implements Repository<BCheck> {
     }
 
     @Override
-    public List<BCheck> loadAllItems() {
+    public List<BCheck> loadAllItems(ItemFactory<BCheck> itemFactory) {
         Repository<BCheck> repository =  switch (repositorySettingsReader.repositoryType()) {
             case FILESYSTEM -> fileSystemRepository;
             case GITHUB -> gitHubBCheckRepository;
         };
 
-        return repository.loadAllItems();
+        return repository.loadAllItems(itemFactory);
     }
 }

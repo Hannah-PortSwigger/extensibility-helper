@@ -1,6 +1,7 @@
 package ui.controller;
 
 import data.Item;
+import data.ItemFactory;
 import data.ItemFilter;
 import data.ItemImporter;
 import file.system.FileSystem;
@@ -22,6 +23,7 @@ public class StoreController<T extends Item> {
     private final ClipboardManager clipboardManager;
     private final FileSystem fileSystem;
     private final ItemFilter<T> itemFilter;
+    private final ItemFactory<T> itemFactory;
 
     public StoreController(
             StorefrontModel<T> model,
@@ -29,7 +31,8 @@ public class StoreController<T extends Item> {
             ItemImporter<T> itemImporter,
             ClipboardManager clipboardManager,
             FileSystem fileSystem,
-            ItemFilter<T> itemFilter
+            ItemFilter<T> itemFilter,
+            ItemFactory<T> itemFactory
     ) {
         this.model = model;
         this.repository = repository;
@@ -37,13 +40,14 @@ public class StoreController<T extends Item> {
         this.clipboardManager = clipboardManager;
         this.fileSystem = fileSystem;
         this.itemFilter = itemFilter;
+        this.itemFactory = itemFactory;
     }
 
     public void loadData() {
         model.setStatus("");
 
         try {
-            model.updateModel(repository.loadAllItems(), model.state().nextState());
+            model.updateModel(repository.loadAllItems(itemFactory), model.state().nextState());
         } catch (Exception e) {
             model.updateModel(emptyList(), ERROR);
         }

@@ -2,6 +2,7 @@ package ui.view.pane.storefront;
 
 import burp.api.montoya.ui.UserInterface;
 import data.Item;
+import data.ItemFactory;
 import data.ItemFilter;
 import data.ItemImporter;
 import file.system.FileSystem;
@@ -44,7 +45,8 @@ public class StorefrontFactory {
     public <T extends Item> Storefront<T> build(
             String title, ItemFilter<T> filter,
             Repository<T> repository,
-            ItemImporter<T> itemImporter) {
+            ItemImporter<T> itemImporter,
+            ItemFactory<T> itemFactory) {
         AtomicReference<StorefrontModel<T>> modelReference = new AtomicReference<>();
         StorefrontModel<T> lateInitializationStorefrontModel = new LateInitializationStorefrontModel<>(modelReference::get);
 
@@ -54,7 +56,8 @@ public class StorefrontFactory {
                 itemImporter,
                 clipboardManager,
                 fileSystem,
-                filter
+                filter,
+                itemFactory
         );
 
         StorefrontModel<T> storefrontModel = new DefaultStorefrontModel<>(storeController);
