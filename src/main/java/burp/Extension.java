@@ -12,12 +12,14 @@ import ui.view.Store;
 import ui.view.pane.settings.Settings;
 import ui.view.pane.storefront.Storefront;
 import ui.view.pane.storefront.StorefrontFactory;
+import utils.Capabilities;
 import utils.CloseablePooledExecutor;
 
 import javax.swing.*;
 
 import static data.ItemMetadata.BAMBDA;
 import static data.ItemMetadata.BCHECK;
+import static utils.Capabilities.Capability.BAMBDA_IMPORT;
 
 @SuppressWarnings("unused")
 public class Extension implements BurpExtension {
@@ -26,6 +28,8 @@ public class Extension implements BurpExtension {
     @Override
     public void initialize(MontoyaApi api) {
         Persistence persistence = api.persistence();
+
+        Capabilities capabilities = new Capabilities(api.burpSuite().version());
 
         SettingsController settingsController = new SettingsController(persistence.preferences());
 
@@ -49,7 +53,7 @@ public class Extension implements BurpExtension {
                 new BCheckTagColors()
         );
 
-        BambdaItemImporter bambdaItemImporter = api.burpSuite().version().buildNumber() > 20250400000000000L
+        BambdaItemImporter bambdaItemImporter = capabilities.hasCapability(BAMBDA_IMPORT)
                 ? new BambdaItemImporter(logger, api.bambda())
                 : new BambdaItemImporter(logger, null);
 
